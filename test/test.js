@@ -4299,6 +4299,8 @@ describe('docx', () => {
         should(textEl.parentNode.parentNode.nodeName).eql('w:p', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.nodeName).eql('w:tc', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tr', textEl.textContent)
+        // There should be only one w:tc node on that row
+        should(textEl.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('w:tc').length).eql(1)
         should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tbl', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:body', textEl.textContent)
       }
