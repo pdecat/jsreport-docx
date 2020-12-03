@@ -12,7 +12,7 @@ const sizeOf = require('image-size')
 const textract = util.promisify(require('textract').fromBufferWithName)
 const { nodeListToArray, pxToEMU, cmToEMU } = require('../lib/utils')
 
-async function getImageSize (buf) {
+async function getImageSize(buf) {
   const files = await decompress()(buf)
   const doc = new DOMParser().parseFromString(
     files.find(f => f.path === 'word/document.xml').data.toString()
@@ -27,7 +27,7 @@ async function getImageSize (buf) {
   }
 }
 
-function findDirectPictureChild (parentNode) {
+function findDirectPictureChild(parentNode) {
   const childNodes = parentNode.childNodes || []
   let pictureEl
 
@@ -3953,7 +3953,7 @@ describe('docx', () => {
       return true
     })
 
-    function getText (p) {
+    function getText(p) {
       const textNodes = nodeListToArray(p.getElementsByTagName('w:t')).filter(
         t => {
           return t.textContent != null && t.textContent !== ''
@@ -3963,7 +3963,7 @@ describe('docx', () => {
       return textNodes.map(t => t.textContent).join('')
     }
 
-    function getBreaks (p) {
+    function getBreaks(p) {
       return nodeListToArray(p.getElementsByTagName('w:br'))
     }
 
@@ -4215,6 +4215,8 @@ describe('docx', () => {
         should(textEl.parentNode.parentNode.nodeName).eql('w:p', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.nodeName).eql('w:tc', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tr', textEl.textContent)
+        // There should be only two w:tc nodes
+        should(textEl.parentNode.parentNode.parentNode.parentNode.childNodes.length).eql(2)
       }
       if (textEl.textContent.includes('invalid xml table cell')) {
         found.push(textEl.textContent)
@@ -4355,7 +4357,7 @@ describe('docx with extensions.docx.previewInWordOnline === false', () => {
   })
 })
 
-function findChildNode (nodeName, targetNode, allNodes = false) {
+function findChildNode(nodeName, targetNode, allNodes = false) {
   let result = []
 
   for (let i = 0; i < targetNode.childNodes.length; i++) {
