@@ -4253,7 +4253,10 @@ describe('docx', () => {
         xmlTableCell: '<w:tc><w:p><w:r><w:t>raw xml table cell</w:t></w:r></w:p></w:tc>',
         xmlInvalidTableCell: 'invalid xml table cell',
         xmlTable: '<w:tbl><w:tr><w:tc><w:p><w:r><w:t>raw xml full table</w:t></w:r></w:p></w:tc></w:tr></w:tbl>',
-        xmlInvalidTable: 'invalid xml full table'
+        xmlInvalidTable: 'invalid xml full table',
+        xmlDynamicTableColumnsItems: ['<w:r><w:t>dynamic table with raw xml column cell</w:t></w:r>'],
+        xmlDynamicTableRowsItems: [['<w:r><w:t>dynamic table with raw xml row cell</w:t></w:r>']],
+        xmlStaticTableRowsItems: [{ 'firstColumn': '<w:r><w:t>static table with raw xml row cell</w:t></w:r>' }]
       }
     })
 
@@ -4293,12 +4296,18 @@ describe('docx', () => {
         should(textEl.parentNode.nodeName).eql('w:r', textEl.textContent)
         should(textEl.parentNode.parentNode.nodeName).eql('w:body', textEl.textContent)
       }
-      if (textEl.textContent.includes('raw xml table cell')) {
+      if (textEl.textContent.includes('raw xml table cell') ||
+          textEl.textContent.includes('dynamic table with raw xml column cell') ||
+          textEl.textContent.includes('dynamic table with raw xml row cell') ||
+          textEl.textContent.includes('static table with raw xml row cell') ||
+          textEl.textContent.includes('raw xml full table')) {
         found.push(textEl.textContent)
         should(textEl.parentNode.nodeName).eql('w:r', textEl.textContent)
         should(textEl.parentNode.parentNode.nodeName).eql('w:p', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.nodeName).eql('w:tc', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tr', textEl.textContent)
+        // There should be only one w:tc node on that row
+        should(textEl.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('w:tc').length).eql(1)
         should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tbl', textEl.textContent)
         should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:body', textEl.textContent)
       }
@@ -4306,15 +4315,6 @@ describe('docx', () => {
         found.push(textEl.textContent)
         should(textEl.parentNode.nodeName).eql('w:r', textEl.textContent)
         should(textEl.parentNode.parentNode.nodeName).eql('w:tr', textEl.textContent)
-      }
-      if (textEl.textContent.includes('raw xml full table')) {
-        found.push(textEl.textContent)
-        should(textEl.parentNode.nodeName).eql('w:r', textEl.textContent)
-        should(textEl.parentNode.parentNode.nodeName).eql('w:p', textEl.textContent)
-        should(textEl.parentNode.parentNode.parentNode.nodeName).eql('w:tc', textEl.textContent)
-        should(textEl.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tr', textEl.textContent)
-        should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:tbl', textEl.textContent)
-        should(textEl.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName).eql('w:body', textEl.textContent)
       }
       if (textEl.textContent.includes('invalid xml full table')) {
         found.push(textEl.textContent)
@@ -4330,7 +4330,10 @@ describe('docx', () => {
       'raw xml table cell',
       'invalid xml table cell',
       'raw xml full table',
-      'invalid xml full table'
+      'invalid xml full table',
+      'dynamic table with raw xml column cell',
+      'dynamic table with raw xml row cell',
+      'static table with raw xml row cell'
     ])
   })
 
